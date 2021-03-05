@@ -1,12 +1,75 @@
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, View } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import { getLatLon, getWeather } from './src/utils';
+import { Home, History, Loading, Error } from './src/containers';
 
 export default function App() {
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorMsg, setErrorMsg] = useState(null);
+  const [location, setLocation] = useState(null);
+  const [weather, setWeather] = useState(null);
+  const [history, setHistory] = useState(null);
+
+  useEffect(() => {
+    const initApp = async () => {
+      // get lat & lon
+      const { lat, lon, latLonErrorMsg } = await getLatLon();
+      if (latLonErrorMsg) {
+        setErrorMsg(latLonErrorMsg);
+        setIsLoading(false);
+        return;
+      }
+
+      // get weather & location by lat & lon
+      const { location, tempInK, description, weatherErrorMsg } = await getWeather(lat, lon);
+      if (weatherErrorMsg) {
+        setErrorMsg(weatherErrorMsg);
+        setIsLoading(false);
+        return;
+      }
+      setLocation(location);
+      setWeather({ tempInK, description });
+
+      // get history
+      let history = await AsyncStorage.getItem('history');
+      history = history != null ? JSON.parse(history) : { likes: [] };
+      setHistory(history);
+
+      setIsLoading(false);
+    };
+
+    initApp();
+  }, []);
+
+  const likeTip = async (tip) => {
+    const time = new Date();
+    let historyClone = { ...history };
+    historyClone.likes.push({ ...tip, time });
+    await AsyncStorage.setItem('history', JSON.stringify(historyClone));
+    setHistory(historyClone);
+  };
+
+  const clearHistory = async () => {
+    await AsyncStorage.setItem('history', JSON.stringify({ likes: [] }));
+    setHistory({ likes: [] });
+  };
+
   return (
     <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
+      {isLoading ? (
+        <Loading />
+      ) : errorMsg ? (
+        <Error errorMsg={errorMsg} />
+      ) : (
+        <>
+          {<Home location={location} weather={weather} likeTip={likeTip} />}
+          {history && <History history={history} clearHistory={clearHistory} />}
+        </>
+      )}
+      <StatusBar style='auto' />
     </View>
   );
 }
@@ -17,5 +80,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+    margin: 50,
   },
 });
