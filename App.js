@@ -4,7 +4,7 @@ import { StyleSheet, View, TouchableHighlight, Text } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { getLatLon, getWeather } from './src/utils';
-import { Main, Logo } from './src/containers';
+import { Main, Logo } from './src/components';
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);

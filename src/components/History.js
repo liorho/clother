@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, Button, View } from 'react-native';
-import { LikedTip } from '../containers';
+import LikedTip from './LikedTip';
 
 function NoLikes() {
   return (
