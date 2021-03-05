@@ -1,27 +1,22 @@
 import React from 'react';
-import { Text, Button } from 'react-native';
-
-const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+import { StyleSheet, Text, Button } from 'react-native';
+import { fromTempToAdjective, fromDescriptionToAdjective, timeRefactor } from '../utils';
 
 export default function History({ history: { likes }, clearHistory }) {
   return (
     <>
-      <Text>HISTORY</Text>
+      <Text style={styles.baseText}>CLOTHING TIPS HISTORY</Text>
 
       {
         <>
-          <Text>You liked these tips:</Text>
           {likes.map(({ tempInC, tempInF, description, location, clothes, time }, i) => {
-            {
-              /* console.log(typeof time); */
-            }
-            time = new Date(time);
-            time = time.toLocaleDateString('en-US', options);
-            console.log(time);
+            time = timeRefactor(time);
+            const tempAdjective = fromTempToAdjective(tempInC),
+              descAdjective = fromDescriptionToAdjective[description];
 
             return (
-              <Text key={i}>
-                On {time} it looks like you liked our tip and wore a {clothes}
+              <Text key={i} style={styles.titleText}>
+                {i + 1}. {time}: a {clothes} on a {tempAdjective} and {descAdjective} day
               </Text>
             );
           })}
@@ -31,3 +26,14 @@ export default function History({ history: { likes }, clearHistory }) {
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  baseText: {
+    fontFamily: 'Cochin',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  titleText: {
+    fontSize: 15,
+  },
+});

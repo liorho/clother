@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, Button, Image } from 'react-native';
+import { StyleSheet, Text, Button, Image } from 'react-native';
 import { KelvinToCelsius, KelvinToFahrenheit, fromTempToClothes, fromTempToAdjective, fromDescriptionToAdjective } from '../utils';
 import { CLOTHES_IMAGES } from '../consts';
 
@@ -12,12 +12,26 @@ export default function Home({ location, weather: { tempInK, description }, like
 
   return (
     <>
-      <Text>
+      <Text style={styles.baseText}>
         {location} is {tempAdjective} and {descAdjective} with {tempInC}&deg;C / {tempInF}&deg;F
       </Text>
-      <Text>Clothing Tip: Wear a {clothes}!</Text>
+      <Text>{'\n'}</Text>
+      <Text style={styles.titleText}>Clothing Tip: Wear a {clothes}!</Text>
+      <Text>{'\n'}</Text>
       <Image source={CLOTHES_IMAGES[clothes]} />
+      <Text>{'\n'}</Text>
       <Button title='I LIKE THIS TIP!' onPress={() => likeTip({ tempInC, tempInF, description, location, clothes })} />
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  baseText: {
+    fontFamily: 'Cochin',
+    fontSize: 25,
+  },
+  titleText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+});

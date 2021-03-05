@@ -4,7 +4,7 @@ import { StyleSheet, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { getLatLon, getWeather } from './src/utils';
-import { Home, History, Loading, Error } from './src/containers';
+import { Logo, Home, History, Loading, Error } from './src/containers';
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -59,6 +59,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
+      <Logo />
       {isLoading ? (
         <Loading />
       ) : errorMsg ? (
@@ -79,7 +80,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'center',
-    margin: 50,
+    // justifyContent: 'center',
+    margin: 30,
   },
 });
