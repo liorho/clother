@@ -8,7 +8,7 @@ export default function Logo({ errorMsg }) {
 const styles = StyleSheet.create({
   baseText: {
     fontFamily: 'Didot',
-    fontSize: 40,
+    fontSize: 50,
     fontWeight: 'bold',
   },
 });

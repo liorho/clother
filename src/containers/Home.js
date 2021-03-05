@@ -26,6 +26,7 @@ export default function Home({ location, weather: { tempInK, description }, like
 }
 
 const styles = StyleSheet.create({
+  home: {},
   baseText: {
     fontFamily: 'Cochin',
     fontSize: 25,

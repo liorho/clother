@@ -1,10 +1,10 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Button } from 'react-native';
+import { StyleSheet, View, TouchableHighlight, Text } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { getLatLon, getWeather } from './src/utils';
-import { Logo, Home, History, Loading, Error } from './src/containers';
+import { Main, Logo } from './src/containers';
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -48,7 +48,7 @@ export default function App() {
   const likeTip = async (tip) => {
     const time = new Date();
     let historyClone = { ...history };
-    historyClone.likes.push({ ...tip, time });
+    historyClone.likes.unshift({ ...tip, time });
     await AsyncStorage.setItem('history', JSON.stringify(historyClone));
     setHistory(historyClone);
   };
@@ -61,18 +61,31 @@ export default function App() {
   return (
     <View style={styles.container}>
       <Logo />
-      {isLoading ? (
-        <Loading />
-      ) : errorMsg ? (
-        <Error errorMsg={errorMsg} />
-      ) : isHome ? (
-        <Home location={location} weather={weather} likeTip={likeTip} />
-      ) : (
-        <History history={history} clearHistory={clearHistory} />
-      )}
-      <Button title={isHome ? 'HISTORY' : 'HOME'} onPress={() => setIsHome(!isHome)} />
+      <Text>{'\n'}</Text>
+      <View style={styles.main}>
+        <Main
+          isLoading={isLoading}
+          errorMsg={errorMsg}
+          isHome={isHome}
+          location={location}
+          weather={weather}
+          likeTip={likeTip}
+          history={history}
+          clearHistory={clearHistory}></Main>
+      </View>
+      <TabButton isHome={isHome} setIsHome={setIsHome} />
       <StatusBar style='auto' />
     </View>
+  );
+}
+
+function TabButton({ isHome, setIsHome }) {
+  return (
+    <TouchableHighlight style={styles.button} onPress={() => setIsHome(!isHome)} activeOpacity='0.8'>
+      <View style={styles.button}>
+        <Text style={styles.buttonText}>{isHome ? 'HISTORY' : 'HOME'}</Text>
+      </View>
+    </TouchableHighlight>
   );
 }
 
@@ -81,7 +94,19 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
-    // justifyContent: 'center',
     margin: 30,
+  },
+  main: {
+    alignItems: 'center',
+    height: 480,
+  },
+  button: {
+    alignItems: 'center',
+    backgroundColor: '#DDDDDD',
+    padding: 5,
+    width: 100,
+  },
+  buttonText: {
+    fontSize: 17,
   },
 });

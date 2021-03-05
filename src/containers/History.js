@@ -1,28 +1,23 @@
 import React from 'react';
-import { StyleSheet, Text, Button } from 'react-native';
-import { fromTempToAdjective, fromDescriptionToAdjective, timeRefactor } from '../utils';
+import { StyleSheet, Text, Button, View } from 'react-native';
+import { LikedTip } from '../containers';
+
+function NoLikes() {
+  return (
+    <View style={styles.noLikesView}>
+      <Text style={styles.noLikesText}>NADA</Text>
+    </View>
+  );
+}
 
 export default function History({ history: { likes }, clearHistory }) {
   return (
     <>
       <Text style={styles.baseText}>CLOTHING TIPS HISTORY</Text>
-
-      {
-        <>
-          {likes.map(({ tempInC, tempInF, description, location, clothes, time }, i) => {
-            time = timeRefactor(time);
-            const tempAdjective = fromTempToAdjective(tempInC),
-              descAdjective = fromDescriptionToAdjective[description];
-
-            return (
-              <Text key={i} style={styles.titleText}>
-                {i + 1}. {time}: a {clothes} on a {tempAdjective} and {descAdjective} day
-              </Text>
-            );
-          })}
-        </>
-      }
-      <Button title='CLEAR HISTORY' onPress={clearHistory} />
+      <Text>{'\n'}</Text>
+      {likes.length ? likes.map((like, i) => <LikedTip key={i} like={like} index={i + 1} />) : <NoLikes />}
+      <Text>{'\n'}</Text>
+      {likes.length ? <Button title='CLEAR HISTORY' onPress={clearHistory} /> : null}
     </>
   );
 }
@@ -33,7 +28,10 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
   },
-  titleText: {
-    fontSize: 15,
+  noLikesView: {
+    alignItems: 'center',
+  },
+  noLikesText: {
+    fontSize: 70,
   },
 });
