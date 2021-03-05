@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Button } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { getLatLon, getWeather } from './src/utils';
@@ -9,6 +9,7 @@ import { Logo, Home, History, Loading, Error } from './src/containers';
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState(null);
+  const [isHome, setIsHome] = useState(true);
   const [location, setLocation] = useState(null);
   const [weather, setWeather] = useState(null);
   const [history, setHistory] = useState(null);
@@ -64,12 +65,12 @@ export default function App() {
         <Loading />
       ) : errorMsg ? (
         <Error errorMsg={errorMsg} />
+      ) : isHome ? (
+        <Home location={location} weather={weather} likeTip={likeTip} />
       ) : (
-        <>
-          {<Home location={location} weather={weather} likeTip={likeTip} />}
-          {history && <History history={history} clearHistory={clearHistory} />}
-        </>
+        <History history={history} clearHistory={clearHistory} />
       )}
+      <Button title={isHome ? 'HISTORY' : 'HOME'} onPress={() => setIsHome(!isHome)} />
       <StatusBar style='auto' />
     </View>
   );
